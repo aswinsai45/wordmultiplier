@@ -25,17 +25,20 @@ export default function WordMultiplier() {
     let shift = 0;
     let trace = [];
 
-    while (y !== 0) {
-      if ((y & 1) === 1) {
-        let partial = x << shift;
+    const originalY = y;
+    const binaryY = y.toString(2).split("").reverse();
+
+    binaryY.forEach((bit, i) => {
+      if (bit === "1") {
+        let partial = x << i;
         res += partial;
-        trace.push(`+ ${x} << ${shift} = ${partial}`);
+        trace.push(
+          `Bit ${i} of multiplier (from right) is 1 → Add ${x} shifted left by ${i} (i.e., ${x} x 2^${i}) = ${partial}`
+        );
       } else {
-        trace.push(`Skipped: ${x} << ${shift} (bit was 0)`);
+        trace.push(`Bit ${i} of multiplier is 0 → Skip (no addition)`);
       }
-      shift++;
-      y >>= 1;
-    }
+    });
 
     setSteps(trace);
     return res;
@@ -46,7 +49,7 @@ export default function WordMultiplier() {
     setError("");
     if (mode === "binary") {
       if (!isBinary(a) || !isBinary(b)) {
-        setError("Please enter valid binary numbers (0 or 1 only).");
+        setError("Please enter valid binary numbers (0 or 1 only).\n");
         setResult(null);
         setSteps([]);
         return;
@@ -154,7 +157,7 @@ export default function WordMultiplier() {
                 </span>
               )}
             </h2>
-            <h3 className="font-semibold text-gray-700 mb-2">Binary Steps:</h3>
+            <h3 className="font-semibold text-gray-700 mb-2">Steps:</h3>
             <ul className="list-decimal list-inside text-sm text-gray-700 space-y-1 pl-2">
               {steps.map((step, index) => (
                 <li key={index} className="pl-1">
